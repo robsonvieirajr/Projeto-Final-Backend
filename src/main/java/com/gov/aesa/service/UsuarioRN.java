@@ -37,6 +37,9 @@ public class UsuarioRN extends AesaBaseCtr {
 		if (usuario == null) {
 			throw new ViolacaoDeRegraEx("Usuário não encontrado");
 		}
+		if (usuario.getSenha().equalsIgnoreCase(novaSenha)) {
+			throw new ViolacaoDeRegraEx("A nova senha não pode ser a mesma que a senha atual");
+		}
 		usuario.setToken(null);
 		usuario.setSenha(novaSenha);
 		usuarioRepository.save(usuario);

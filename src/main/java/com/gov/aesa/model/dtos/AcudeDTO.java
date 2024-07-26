@@ -1,13 +1,17 @@
 package com.gov.aesa.model.dtos;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import lombok.Data;
 
 @Data
 public class AcudeDTO {
+
 	private Long id;
 	private String nome;
-	private String localizacao;
-
-	// Getters e setters
+	private LocalDate dataPedido;
+	private BigDecimal volumeMorto;
+	private BigDecimal volumeAcumulado;
+	private BigDecimal areaDrenagem;
+	private BigDecimal coeficienteTanque;
 }
-

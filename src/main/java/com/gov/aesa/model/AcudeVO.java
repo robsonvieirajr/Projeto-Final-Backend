@@ -1,64 +1,66 @@
 package com.gov.aesa.model;
 
-import java.util.Objects;
-import jakarta.persistence.Basic;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import org.hibernate.annotations.ColumnDefault;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Entity
-@Table(name = "ACUDE", schema = "AESA", catalog = "recursos_hidricos")
+@Table(name = "acude", schema = "aesa")
 public class AcudeVO {
-	private Long id;
-	private String nome;
-	private String localizacao;
-
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
-	@Column(name = "id", nullable = false)
-	public Long getId() {
-		return id;
-	}
+	@ColumnDefault("nextval('seq_id_acude'::regclass)")
+	@Column(name = "id_acude", nullable = false)
+	private Integer id;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+	@NotNull
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "id_precipitacao", nullable = false)
+	private PrecipitacaoVO idPrecipitacao;
 
-	@Basic
-	@Column(name = "nome", nullable = false, length = 100)
-	public String getNome() {
-		return nome;
-	}
+	@NotNull
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "id_vazao", nullable = false)
+	private VazaoVO idVazao;
 
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
+	@NotNull
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "id_evaporacao", nullable = false)
+	private EvaporacaoVO idEvaporacao;
 
-	@Basic
-	@Column(name = "localizacao", nullable = false, length = 100)
-	public String getLocalizacao() {
-		return localizacao;
-	}
+	@NotNull
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "id_cota_area_volume", nullable = false)
+	private CotaAreaVolumeVO idCotaAreaVolume;
 
-	public void setLocalizacao(String localizacao) {
-		this.localizacao = localizacao;
-	}
+	@Size(max = 255)
+	@Column(name = "nome")
+	private String nome;
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (o == null || getClass() != o.getClass())
-			return false;
-		AcudeVO acudeVO = (AcudeVO) o;
-		return id == acudeVO.id && Objects.equals(nome, acudeVO.nome) && Objects.equals(localizacao, acudeVO.localizacao);
-	}
+	@Column(name = "data_pedido")
+	private LocalDate dataPedido;
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(id, nome, localizacao);
-	}
+	@Column(name = "vol_morto")
+	private BigDecimal volumeMorto;
+
+	@Column(name = "vol_acumulado")
+	private BigDecimal volumeAcumulado;
+
+	@Column(name = "area_drenagem")
+	private BigDecimal areaDrenagem;
+
+	@Column(name = "coeficiente_tanque")
+	private BigDecimal coeficienteTanque;
 }

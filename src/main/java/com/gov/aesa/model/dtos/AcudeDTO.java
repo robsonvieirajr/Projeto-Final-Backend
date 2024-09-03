@@ -12,6 +12,7 @@ public class AcudeDTO {
 	private LocalDate dataPedido;
 	private BigDecimal volumeMorto;
 	private BigDecimal volumeAcumulado;
-	private BigDecimal areaDrenagem;
+	private BigDecimal volumeMaximo;
+	private BigDecimal drenagem;
 	private BigDecimal coeficienteTanque;
 }

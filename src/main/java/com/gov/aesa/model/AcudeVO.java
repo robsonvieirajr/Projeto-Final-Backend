@@ -1,16 +1,13 @@
 package com.gov.aesa.model;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import org.hibernate.annotations.ColumnDefault;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,37 +17,16 @@ import lombok.Setter;
 @Entity
 @Table(name = "acude", schema = "aesa")
 public class AcudeVO {
+
 	@Id
-	@ColumnDefault("nextval('seq_id_acude'::regclass)")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "acude_seq_gen")
+	@SequenceGenerator(name = "acude_seq_gen", sequenceName = "seq_id_acude", allocationSize = 1)
 	@Column(name = "id_acude", nullable = false)
-	private Integer id;
-
-	@NotNull
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "id_precipitacao", nullable = false)
-	private PrecipitacaoVO idPrecipitacao;
-
-	@NotNull
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "id_vazao", nullable = false)
-	private VazaoVO idVazao;
-
-	@NotNull
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "id_evaporacao", nullable = false)
-	private EvaporacaoVO idEvaporacao;
-
-	@NotNull
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "id_cota_area_volume", nullable = false)
-	private CotaAreaVolumeVO idCotaAreaVolume;
+	private Long id;
 
 	@Size(max = 255)
 	@Column(name = "nome")
 	private String nome;
-
-	@Column(name = "data_pedido")
-	private LocalDate dataPedido;
 
 	@Column(name = "vol_morto")
 	private BigDecimal volumeMorto;
@@ -60,6 +36,9 @@ public class AcudeVO {
 
 	@Column(name = "area_drenagem")
 	private BigDecimal areaDrenagem;
+
+	@Column(name = "vol_maximo")
+	private BigDecimal volumeMaximo;
 
 	@Column(name = "coeficiente_tanque")
 	private BigDecimal coeficienteTanque;

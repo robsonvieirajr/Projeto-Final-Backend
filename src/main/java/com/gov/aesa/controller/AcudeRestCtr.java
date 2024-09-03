@@ -48,23 +48,35 @@ public class AcudeRestCtr extends AesaBaseCtr {
 	public ResponseEntity<RetornoAesa> criarAcudes(@RequestBody AcudeDTO acudeDTO) {
 		try {
 			AcudeVO acudeVO = new AcudeVO();
-			acudeVO.setNome(acudeDTO.getNome());
-			RetornoAesa savedAcudeRetorno = acudeRN.save(acudeVO);
+			acudeVO.setNome(acudeDTO.getNome() != null ? acudeDTO.getNome() : "");
+			acudeVO.setVolumeMorto(acudeDTO.getVolumeMorto() != null ? acudeDTO.getVolumeMorto() : null);
+			acudeVO.setVolumeAcumulado(acudeDTO.getVolumeAcumulado() != null ? acudeDTO.getVolumeAcumulado() : null);
+			acudeVO.setVolumeMaximo(acudeDTO.getVolumeMaximo() != null ? acudeDTO.getVolumeMaximo() : null);
+			acudeVO.setAreaDrenagem(acudeDTO.getDrenagem() != null ? acudeDTO.getDrenagem() : null);
+			acudeVO.setCoeficienteTanque(acudeDTO.getCoeficienteTanque() != null ? acudeDTO.getCoeficienteTanque() : null);
 
-			if (savedAcudeRetorno != null)  {
-				AcudeVO savedAcude = (AcudeVO) savedAcudeRetorno.getObjeto();
+			RetornoAesa retornoAesa = acudeRN.save(acudeVO);
+			if (retornoAesa != null && retornoAesa.getObjeto() instanceof AcudeVO) {
+				AcudeVO savedAcude = (AcudeVO) retornoAesa.getObjeto();
 				AcudeDTO savedAcudeDTO = new AcudeDTO();
-				savedAcudeDTO.setId(Long.valueOf(savedAcude.getId()));
-				savedAcudeDTO.setNome(savedAcude.getNome());
+				savedAcudeDTO.setId(savedAcude.getId() != null ? savedAcude.getId() : 0);
+				savedAcudeDTO.setNome(savedAcude.getNome() != null ? savedAcude.getNome() : "");
+				savedAcudeDTO.setVolumeMorto(savedAcude.getVolumeMorto() != null ? savedAcude.getVolumeMorto() : null);
+				savedAcudeDTO.setVolumeAcumulado(savedAcude.getVolumeAcumulado() != null ? savedAcude.getVolumeAcumulado() : null);
+				savedAcudeDTO.setVolumeMaximo(savedAcude.getVolumeMaximo() != null ? savedAcude.getVolumeMaximo() : null);
+				savedAcudeDTO.setDrenagem(savedAcude.getAreaDrenagem() != null ? savedAcude.getAreaDrenagem() : null);
+				savedAcudeDTO.setCoeficienteTanque(savedAcude.getCoeficienteTanque() != null ? savedAcude.getCoeficienteTanque() : null);
+
 				return ResponseEntity.status(HttpStatus.CREATED).body(gerarRetornoDeSucesso(savedAcudeDTO));
 			} else {
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(savedAcudeRetorno);
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(retornoAesa);
 			}
 		} catch (Exception e) {
 			logger.error("Erro ao criar açude", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(gerarRetornoErro(e.getMessage()));
 		}
 	}
+
 
 	@GetMapping("/listarAcudes")
 	@Operation(summary = ACUDE_RESUMO, description = ACUDE_DESCRICAO, externalDocs = @ExternalDocumentation(description = MENSAGEM_PADRAO_PRELINK, url = ACUDE_URL))
@@ -78,10 +90,10 @@ public class AcudeRestCtr extends AesaBaseCtr {
 					AcudeDTO dto = new AcudeDTO();
 					dto.setId(Long.valueOf(acudeVO.getId() != null ? acudeVO.getId() : 0));
 					dto.setNome(acudeVO.getNome() != null ? acudeVO.getNome() : "");
-					dto.setDataPedido(acudeVO.getDataPedido() != null ? acudeVO.getDataPedido() : null);
 					dto.setVolumeMorto(acudeVO.getVolumeMorto() != null ? acudeVO.getVolumeMorto() : null);
 					dto.setVolumeAcumulado(acudeVO.getVolumeAcumulado() != null ? acudeVO.getVolumeAcumulado() : null);
-					dto.setAreaDrenagem(acudeVO.getAreaDrenagem() != null ? acudeVO.getAreaDrenagem() : null);
+					dto.setVolumeMaximo(acudeVO.getAreaDrenagem() != null ? acudeVO.getVolumeMaximo() : null);
+					dto.setDrenagem(acudeVO.getAreaDrenagem() != null ? acudeVO.getAreaDrenagem() : null);
 					dto.setCoeficienteTanque(acudeVO.getCoeficienteTanque() != null ? acudeVO.getCoeficienteTanque() : null);
 					return dto;
 				}).collect(Collectors.toList());

@@ -1,14 +1,17 @@
 package com.gov.aesa.model.dtos;
 
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Data;
 
 @Data
+@JsonPropertyOrder({ "municipio", "estacao", "codigo", "anosMensais" })
 public class ChuvaDTO {
-	private String municipio;  // Nome do município
-	private String estacao;  // Nome da estação (posto)
-	private int idMunicipio;  // ID do município
+	private String municipio;
+	private String estacao;
 	private List<AnoMensal> anosMensais;  // Lista de anos com dados mensais de chuva
+	private Integer codigo;
+
 
 	// Classe estática para representar os dados anuais e mensais de chuva
 	@Data

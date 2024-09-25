@@ -68,27 +68,28 @@ public class AcudeRN extends AesaBaseCtr {
 			List<ChuvaDTO> listaChuvaDTO = new ArrayList<>();
 			Map<String, Double> acumuladoPorMes = inicializarMapaDeMeses();
 			Map<String, Double> entradasValidasPorMes = inicializarMapaDeMeses();
-			int idMunicipio = 0;
+			int codigo = 0;
 
 			// Iterar pelos meses e processar os dados de chuva
 			for (int mes = 1; mes <= 12; mes++) {
 				String mesFormatado = formatarMes(mes);
 				String jsonResponse = dadosChuva.getDadosDeChuva(ano, mesFormatado);
 				JsonNode rootNode = parseJsonResponse(jsonResponse);
-				idMunicipio = processarDadosMensais(rootNode, municipio, posto, acumuladoPorMes, entradasValidasPorMes, idMunicipio);
+
+				// Processa os dados mensais e atualiza o código
+				codigo = processarDadosMensais(rootNode, municipio, posto, acumuladoPorMes, entradasValidasPorMes, codigo);
 			}
 
 			// Criar o objeto AnoMensal com as médias calculadas
 			ChuvaDTO.AnoMensal anoMensal = calcularDadosMensais(acumuladoPorMes, entradasValidasPorMes, ano);
 
 			// Preencher o ChuvaDTO final com os dados processados
-			ChuvaDTO chuvaDTO = preencherChuvaDTO(municipio, posto, idMunicipio, anoMensal);
+			ChuvaDTO chuvaDTO = preencherChuvaDTO(municipio, posto, codigo, anoMensal);
 			listaChuvaDTO.add(chuvaDTO);
 
 			return listaChuvaDTO;
 
 		} catch (Exception e) {
-			e.printStackTrace();
 			return Collections.emptyList();
 		}
 	}
@@ -97,21 +98,21 @@ public class AcudeRN extends AesaBaseCtr {
 		Map<String, Double> mapa = new LinkedHashMap<>();
 		for (int mes = 1; mes <= 12; mes++) {
 			String mesFormatado = String.format("%02d", mes);
-			mapa.put(mesFormatado, 0.0);
+			mapa.put(mesFormatado, 0.0); // Inicializa cada mês com valor 0.0
 		}
 		return mapa;
 	}
 
 	private String formatarMes(int mes) {
-		return String.format("%02d", mes);
+		return String.format("%02d", mes); // Formatar o mês com dois dígitos
 	}
 
 	private JsonNode parseJsonResponse(String jsonResponse) throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
-		return mapper.readTree(jsonResponse);
+		return mapper.readTree(jsonResponse); // Converte o JSON em uma árvore de nós
 	}
 
-	private int processarDadosMensais(JsonNode rootNode, String municipio, String posto, Map<String, Double> acumuladoPorMes, Map<String, Double> entradasValidasPorMes, int idMunicipio) {
+	private int processarDadosMensais(JsonNode rootNode, String municipio, String posto, Map<String, Double> acumuladoPorMes, Map<String, Double> entradasValidasPorMes, int codigo) {
 		if (rootNode.isArray()) {
 			for (JsonNode dado : rootNode) {
 				String municipioJson = dado.get("municipio").asText();
@@ -119,7 +120,7 @@ public class AcudeRN extends AesaBaseCtr {
 
 				// Verifica se o município e o posto coincidem
 				if (municipio.equalsIgnoreCase(municipioJson) && posto.equalsIgnoreCase(postoJson)) {
-					idMunicipio = dado.get("id_municipio").asInt();
+					codigo = dado.get("codigo").asInt(); // Obtém o código
 					JsonNode dadosAnoArray = dado.get("data");
 					if (dadosAnoArray != null && dadosAnoArray.isObject()) {
 						processarChuvaMeses(dadosAnoArray, acumuladoPorMes, entradasValidasPorMes);
@@ -127,7 +128,7 @@ public class AcudeRN extends AesaBaseCtr {
 				}
 			}
 		}
-		return idMunicipio;
+		return codigo;
 	}
 
 	private void processarChuvaMeses(JsonNode dadosAnoArray, Map<String, Double> acumuladoPorMes, Map<String, Double> entradasValidasPorMes) {
@@ -136,9 +137,9 @@ public class AcudeRN extends AesaBaseCtr {
 			double valor = dadosAnoArray.get(dataKey).asDouble();
 
 			if (valor > 0.0) { // Ignorar valores 0.0
-				String mesRegistro = dataKey.split("-")[1];
+				String mesRegistro = dataKey.split("-")[1]; // Extrair o mês do formato "YYYY-MM"
 				acumuladoPorMes.put(mesRegistro, acumuladoPorMes.getOrDefault(mesRegistro, 0.0) + valor);
-				entradasValidasPorMes.put(mesRegistro, entradasValidasPorMes.getOrDefault((Object) mesRegistro, (double) 0) + 1);
+				entradasValidasPorMes.put(mesRegistro, entradasValidasPorMes.getOrDefault(mesRegistro, 0.0) + 1);
 			}
 		}
 	}
@@ -169,9 +170,9 @@ public class AcudeRN extends AesaBaseCtr {
 		return anoMensal;
 	}
 
-	private ChuvaDTO preencherChuvaDTO(String municipio, String posto, int idMunicipio, ChuvaDTO.AnoMensal anoMensal) {
+	private ChuvaDTO preencherChuvaDTO(String municipio, String posto, int codigo, ChuvaDTO.AnoMensal anoMensal) {
 		ChuvaDTO chuvaDTO = new ChuvaDTO();
-		chuvaDTO.setIdMunicipio(idMunicipio);
+		chuvaDTO.setCodigo(codigo);
 		chuvaDTO.setMunicipio(municipio);
 		chuvaDTO.setEstacao(posto);
 		chuvaDTO.setAnosMensais(List.of(anoMensal));
@@ -195,4 +196,5 @@ public class AcudeRN extends AesaBaseCtr {
 		default: return mes;
 		}
 	}
+
 }

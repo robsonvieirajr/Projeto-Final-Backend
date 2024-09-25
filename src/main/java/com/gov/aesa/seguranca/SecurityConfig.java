@@ -35,7 +35,9 @@ public class SecurityConfig {
 						"/swagger-ui/index.html",
 						"/api/v1/acude/listarAcudes",
 						"/api/v1/acude/buscarAcudePorNome",
-						"/api/v1/acude/criarAcudes"
+						"/api/v1/acude/criarAcudes",
+						"/api/v1/acude/importarChuvas"
+
 				).permitAll()
 				.anyRequest().authenticated()
 				.and()

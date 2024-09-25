@@ -141,286 +141,6 @@ public class UtilAESA {
 		return toReturn;
 	}
 
-	public static String retornaEstadoCivilServidor(String estadoCivil) {
-		if (estadoCivil != null && !estadoCivil.isEmpty()) {
-			switch (estadoCivil.toUpperCase()) {
-			case "CAS":
-				return "CASADO";
-			case "SOL":
-				return "SOLTEIRO";
-			case "SEP":
-				return "SEPARADO";
-			case "DIV":
-				return "DIVORCIADO";
-			case "VIU":
-				return "VIÚVO";
-			default:
-				return estadoCivil;
-			}
-		}
-		estadoCivil = "";
-		return estadoCivil;
-	}
-
-	public static String retornaSexoServidor(String sexoServidor) {
-		if (sexoServidor != null && !sexoServidor.isEmpty()) {
-			if (sexoServidor.equalsIgnoreCase("F")) {
-				return "FEMININO";
-			} else {
-				return "MASCULINO";
-			}
-		}
-		sexoServidor = "";
-		return sexoServidor;
-	}
-
-	public static String obtemDescricaoFatorRH(String fatorRH) {
-
-		if (fatorRH != null && !fatorRH.isEmpty() && fatorRH.equalsIgnoreCase("+")) {
-			return "POSITIVO";
-		} else if (fatorRH != null && !fatorRH.isEmpty() && fatorRH.equalsIgnoreCase("-")) {
-			return "NEGATIVO";
-		} else {
-			return "";
-		}
-
-	}
-
-	@Transient
-	public static String obterDataAtualFormatadaDDMMYYYYHHMM() {
-
-		String dataFormatada = "";
-
-		dataFormatada = new SimpleDateFormat("dd/MM/yyyy").format(new Date());
-
-		return dataFormatada;
-	}
-
-	public static String obtemIdentificadorZonaRural(String identificadorZonaRural) {
-		if (identificadorZonaRural != null && !identificadorZonaRural.isEmpty()) {
-			if (identificadorZonaRural.equalsIgnoreCase("N")) {
-				return "NÃO";
-			} else {
-				return "SIM";
-			}
-		}
-		return "";
-	}
-
-	@Transient
-	public static String obterHorarioHHMM() {
-
-		String hora = "";
-
-		hora = new SimpleDateFormat("HH:mm").format(new Date());
-
-		return hora;
-
-	}
-
-	public static String obterDataAtualFusoFormatadaDDMMYYYYHHMM() {
-
-		String dataFormatada = "";
-		// bahia por conta governo nao ter adotado horario de verao
-		ZonedDateTime zd = java.time.ZonedDateTime.now(ZoneId.of("America/Bahia"));
-
-		Date data = Date.from(zd.toLocalDateTime().atZone(ZoneId.systemDefault()).toInstant());
-		// String dateToStr = DataHelper.converteData(data, DataHelper.FORMATO_DATA_HORA_MINUTO_SEGUNDO);
-
-		dataFormatada = new SimpleDateFormat("dd/MM/yyyy - HH:mm:ss").format(data);
-
-		return dataFormatada;
-	}
-
-	public static LocalDate adicionaDiminuiDiasDataAtual(Integer dias) throws Exception {
-
-		ZonedDateTime dataReferencia = java.time.ZonedDateTime.now(ZoneId.of("America/Bahia"));
-
-		if (dias > 0) {
-			dataReferencia = dataReferencia.plusDays(Long.valueOf(dias.toString()));// calculando dataFimEfetiva
-		} else {
-			dias = Math.abs(dias);
-			dataReferencia = dataReferencia.minusDays(Long.valueOf(dias.toString()));// calculando dataFimEfetiva
-		}
-
-		return dataReferencia.toLocalDate();
-	}
-
-	public static Date obterDataAtualFuso() {
-
-		String dataFormatada = "";
-		// bahia por conta governo nao ter adotado horario de verao
-		ZonedDateTime zd = java.time.ZonedDateTime.now(ZoneId.of("America/Bahia"));
-
-		Date data = Date.from(zd.toLocalDateTime().atZone(ZoneId.systemDefault()).toInstant());
-		// String dateToStr = DataHelper.converteData(data, DataHelper.FORMATO_DATA_HORA_MINUTO_SEGUNDO);
-
-		dataFormatada = new SimpleDateFormat("dd/MM/yyyy - HH:mm:ss").format(data);
-		try {
-			return new SimpleDateFormat("dd/MM/yyyy - HH:mm:ss").parse(dataFormatada);
-		} catch (ParseException e) {
-			throw new ViolacaoDeRegraEx(UtilAESA.obtemMensagemCompletaException(e));
-		}
-
-	}
-
-	public static Integer extraiDigitosERetornaInteiroBaseadoEmUmValor(Integer valor, Integer quantidadeDigitos) {
-		if (valor != null) {
-			quantidadeDigitos = Math.max(1, quantidadeDigitos);
-			int positivo = Math.abs(valor);
-			String texto = String.valueOf(positivo);
-			if (quantidadeDigitos > texto.length()) {
-				return valor;
-			}
-			return Integer.parseInt(texto.substring(0, quantidadeDigitos)) * Integer.signum(valor);
-		}
-		return 0;
-	}
-
-	public static String obtemDescricaoEfetivoExercicio(String identificadorEfetivoExercicio) {
-		return Objects.equals(identificadorEfetivoExercicio, "S") ? "SIM" : "NÃO";
-	}
-
-	public static Integer obtemDiasEntreDatas(LocalDate dataInicial, LocalDate dataFinal) {
-		return (int) ChronoUnit.DAYS.between(dataFinal, dataInicial);
-	}
-
-	public static String formataAnoMesTaxacao(Integer anoMesTaxacaoCompleto) {
-		if (anoMesTaxacaoCompleto == null || anoMesTaxacaoCompleto == 0) {
-			return "";
-		}
-		String anoMesTaxacao = String.valueOf(anoMesTaxacaoCompleto);
-		String mes = anoMesTaxacao.substring(4);
-		String ano = anoMesTaxacao.substring(0, 4);
-		String anoMesFormatado = new StringBuilder().append(mes).append("/").append(ano).toString();
-		return anoMesFormatado;
-	}
-
-	public final static class Partition<T> extends AbstractList<List<T>> {
-
-		private final List<T> list;
-		private final int chunkSize;
-
-		public Partition(List<T> list, int chunkSize) {
-			this.list = new ArrayList<>(list);
-			this.chunkSize = chunkSize;
-		}
-
-		public static <T> Partition<T> ofSize(List<T> list, int chunkSize) {
-			return new Partition<>(list, chunkSize);
-		}
-
-		@Override
-		public List<T> get(int index) {
-			int start = index * chunkSize;
-			int end = Math.min(start + chunkSize, list.size());
-
-			if (start > end) {
-				throw new IndexOutOfBoundsException(String.format("Index %d is out of the list range <0,%d>", index, (size() - 1)));
-			}
-
-			return new ArrayList<>(list.subList(start, end));
-		}
-
-		@Override
-		public int size() {
-			return (int) Math.ceil((double) list.size() / (double) chunkSize);
-		}
-	}
-
-	public static String converteValoresTemplate(String template, String atributo, String valor) throws Exception {
-		if (valor == null) {
-			StringBuilder sb = new StringBuilder();
-			sb.append("[");
-			sb.append(atributo);
-			sb.append("]");
-			return template.replace(sb.toString(), "");
-		} else {
-			StringBuilder sb1 = new StringBuilder();
-			sb1.append("[");
-			sb1.append(atributo);
-			sb1.append("]");
-			return template.replace(sb1.toString(), valor);
-		}
-	}
-
-	public static String recuperaDataExtenso(Date data) {
-		Date dataAux = data != null ? data : new Date();
-		// String dataAtual;
-		String dataExtenso;
-
-		// dataAtual = new SimpleDateFormat("dd/MM/yyyy").format(dataAux);
-
-		List<String> mes = new ArrayList<String>();
-		mes.clear();
-
-		mes.add("Janeiro");
-		mes.add("Fevereiro");
-		mes.add("Março");
-		mes.add("Abril");
-		mes.add("Maio");
-		mes.add("Junho");
-		mes.add("Julho");
-		mes.add("Agosto");
-		mes.add("Setembro");
-		mes.add("Outrubro");
-		mes.add("Novembro");
-		mes.add("Dezembro");
-
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("Belo Horizonte, ");
-		stringBuilder.append(new SimpleDateFormat("dd").format(dataAux));
-		stringBuilder.append(" de ");
-		stringBuilder.append(mes.get(Integer.valueOf((new SimpleDateFormat("MM").format(dataAux))) - 1));
-		stringBuilder.append(" de ");
-		stringBuilder.append(new SimpleDateFormat("yyyy").format(dataAux));
-		dataExtenso = stringBuilder.toString();
-
-		return dataExtenso;
-	}
-
-	public static List<Integer> recuperaIntervaloInteirosLista(Integer valorInicial, Integer valorFinal) {
-
-		List<Integer> list = IntStream.range(valorInicial, valorFinal + 1).boxed().collect(Collectors.toList());
-		return list;
-	}
-
-	public static Date getDataFromString(String data) throws ParseException {
-		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-		return format.parse(data);
-	}
-
-	public static LocalDateTime getLocalDateTimeFromString(String data) throws DateTimeParseException {
-		LocalDate date = LocalDate.parse(data);
-		LocalDateTime dateTime = LocalDateTime.of(date, LocalTime.MIN);
-		return dateTime;
-	}
-
-	public static LocalDate getLocalDateFromString(String data) throws DateTimeParseException {
-		LocalDate date = LocalDate.parse(data);
-		return date;
-	}
-
-	public static Date getDataComHoraFromString(String data) throws ParseException {
-		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-		return format.parse(data);
-	}
-
-	public static String formataDataYYYYMM(Date dataAFormatar) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
-		String dataRetorno = ConstantesAESA.DADO_NAO_ENCONTRADO;
-		if (dataAFormatar != null) {
-			dataRetorno = sdf.format(dataAFormatar);
-		}
-
-		return dataRetorno;
-	}
-
-	public static String formataDataDDMMYYYYHHMM() {
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-		String dataRetorno = sdf.format(new Date());
-		return dataRetorno;
-	}
 
 	public static boolean isCPF(String CPF) {
 		// considera-se erro CPF's formados por uma sequencia de numeros iguais
@@ -476,14 +196,6 @@ public class UtilAESA {
 		}
 	}
 
-	public static String calcularHashArquivo(byte[] arquivo) throws NoSuchAlgorithmException {
-		MessageDigest md = MessageDigest.getInstance("SHA-512");
-		md.update(arquivo);
-		byte[] digest = md.digest();
-		String hash = DatatypeConverter.printHexBinary(digest).toUpperCase();
-		return hash.trim();
-	}
-
 	public static byte[] ziparArquivo(String filename, byte[] input) throws IOException {
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -534,19 +246,6 @@ public class UtilAESA {
 		}
 
 		return dataRetorno;
-	}
-
-	public static String formataAnoMesPagamento(String dataAFormatar) {
-		StringBuilder textoFortado = new StringBuilder();
-		if (dataAFormatar != null) {
-			// data tem que estar no foramto dd/MM/yyyy
-			textoFortado.append(dataAFormatar.substring(3, dataAFormatar.length()));
-
-		} else {
-			textoFortado.append(ConstantesAESA.DADO_NAO_ENCONTRADO);
-		}
-		return textoFortado.toString();
-
 	}
 
 	public static LocalDate obterIntervaloFimAno(Integer anoInicio) {
@@ -697,7 +396,6 @@ public class UtilAESA {
 		logger.error(mensagemCompletaGraylog);
 		retorno.setMensagem(mensagemCompleta);
 		retorno.setHashErro(hash);
-		tratarRetornoCasoForExcecaoRegraDeNegocio(retorno);
 		return retorno;
 	}
 
@@ -711,7 +409,6 @@ public class UtilAESA {
 		logger.error(mensagemCompletaGraylog);
 		retorno.setMensagem(mensagemCompleta);
 		retorno.setHashErro(hash);
-		tratarRetornoCasoForExcecaoRegraDeNegocio(retorno);
 		return retorno;
 	}
 
@@ -775,34 +472,6 @@ public class UtilAESA {
 			}
 		}
 		return "";
-	}
-
-	public static String getIpMovimentacao(HttpServletRequest request) {
-		String LOCALHOST_IPV4 = "127.0.0.1";
-		String LOCALHOST_IPV6 = "0:0:0:0:0:0:0:1";
-
-		String ipAddress = request.getHeader("X-Forwarded-For");
-		if (StringUtils.isEmpty(ipAddress) || "unknown".equalsIgnoreCase(ipAddress)) {
-			ipAddress = request.getHeader("Proxy-Client-IP");
-		}
-		if (StringUtils.isEmpty(ipAddress) || "unknown".equalsIgnoreCase(ipAddress)) {
-			ipAddress = request.getHeader("WL-Proxy-Client-IP");
-		}
-		if (StringUtils.isEmpty(ipAddress) || "unknown".equalsIgnoreCase(ipAddress)) {
-			ipAddress = request.getRemoteAddr();
-			if (LOCALHOST_IPV4.equals(ipAddress) || LOCALHOST_IPV6.equals(ipAddress)) {
-				try {
-					InetAddress inetAddress = InetAddress.getLocalHost();
-					ipAddress = inetAddress.getHostAddress();
-				} catch (UnknownHostException e) {
-					throw new ViolacaoDeRegraEx(UtilAESA.obtemMensagemCompletaException(e));
-				}
-			}
-		}
-		if (!StringUtils.isEmpty(ipAddress) && ipAddress.length() > 15 && ipAddress.indexOf(",") > 0) {
-			ipAddress = ipAddress.substring(0, ipAddress.indexOf(","));
-		}
-		return ipAddress;
 	}
 
 	public static String obtemMensagemCompletaException(Exception e) {
@@ -880,72 +549,6 @@ public class UtilAESA {
 
 	}
 
-	public static Integer getDDDTelefone(String telefone) {
-		return telefone != null && !telefone.isEmpty() ? Integer.parseInt(telefone.substring(0, 2)) : 0;
-	}
-
-	public static Integer getTelfoneSemDDD(String telefone) {
-		return telefone != null && !telefone.isEmpty() ? Integer.parseInt(telefone.substring(2, telefone.length())) : 0;
-	}
-
-	public static int calculaDvNrPessoaFisJur(String nrPessoaFisJur) {
-		// variáveis de instancia
-		int soma = 0;
-		int resto = 0;
-		int dv = 0;
-		String[] numeros = new String[nrPessoaFisJur.length() + 1];
-		int multiplicador = 2;
-
-		for (int i = nrPessoaFisJur.length(); i > 0; i--) {
-			// Multiplica da direita pra esquerda, incrementando o multiplicador de 2 a 9
-			// Caso o multiplicador seja maior que 9 o mesmo recomeça em 2
-			if (multiplicador > 9) {
-				// pega cada numero isoladamente
-				multiplicador = 2;
-				numeros[i] = String.valueOf(Integer.valueOf(nrPessoaFisJur.substring(i - 1, i)) * multiplicador);
-				multiplicador++;
-			} else {
-				numeros[i] = String.valueOf(Integer.valueOf(nrPessoaFisJur.substring(i - 1, i)) * multiplicador);
-				multiplicador++;
-			}
-		}
-
-		// Realiza a soma de todos os elementos do array e calcula o digito verificador
-		// na base 11 de acordo com a regra.
-		for (int i = numeros.length; i > 0; i--) {
-			if (numeros[i - 1] != null) {
-				soma += Integer.valueOf(numeros[i - 1]);
-			}
-		}
-		resto = soma % 11;
-		dv = 11 - resto;
-
-		// tratando casos que o dv>9
-		if (dv > 9) {
-			dv = 0;
-		}
-
-		// retorna o digito verificador
-		return resto == 0 ? 1 : dv;
-
-	}
-
-	public static String limitaString(String texto, int maximo) {
-		if (texto.length() <= maximo) {
-			return texto;
-		} else {
-			return texto.substring(0, maximo);
-		}
-	}
-
-	public static String normalizarTexto(String textoASerNormalizado) {
-		String textoNormalizado = Normalizer.normalize(textoASerNormalizado, Normalizer.Form.NFD).replaceAll("\\p{M}", "").replaceAll("[^\\p{ASCII}]", "").replaceAll("[^\\w\\s]", " ").replaceAll("\\s+", " ").replaceAll("ł", "l").replaceAll("Æ", "AE")
-				.replaceAll("Ø", "O").replaceAll("Đ", "D").replaceAll("Þ", "TH").replaceAll("æ", "ae").replaceAll("ø", "o").replaceAll("đ", "d").replaceAll("þ", "th").replaceAll("ß", "ss").replaceAll("œ", "oe").replaceAll("ƒ", "f")
-				.replaceAll("ð", "dh");
-
-		return textoNormalizado.trim();
-	}
-
 	public static String removeEspacosEmBrancos(String input) {
 		return input.replaceAll("\\s+", "");
 	}
@@ -957,25 +560,5 @@ public class UtilAESA {
 		stringBuilder.append(texto);
 		stringBuilder.append("@@");
 		return texto != null ? stringBuilder.toString() : "";
-	}
-
-	private static void tratarRetornoCasoForExcecaoRegraDeNegocio(RetornoAesa retorno) {
-		if (retorno.getMensagem() != null && !retorno.getMensagem().trim().isEmpty() && retorno.getMensagem().contains("@@")) {
-			retorno.setCodigoMensagem(ConstantesAESA.CRITICA_CODIGO_REGRA_DE_NEGOCIO);
-
-			String input = retorno.getMensagem();
-
-			int indicePrimeiraChave = input.indexOf("@@");
-			if (indicePrimeiraChave != -1) {
-				int indiceSegundaChave = input.indexOf("@@", indicePrimeiraChave + 2);
-				if (indiceSegundaChave != -1) {
-					String textoParaExibicao = input.substring(indicePrimeiraChave + 2, indiceSegundaChave);
-
-					retorno.setMensagemExibicao(textoParaExibicao);
-					retorno.setMensagem(retorno.getMensagem().replace("@", ""));
-				}
-			}
-
-		}
 	}
 }

@@ -1,5 +1,6 @@
 package com.gov.aesa.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.gov.aesa.model.AcudeVO;
 import com.gov.aesa.model.dtos.AcudeDTO;
+import com.gov.aesa.model.dtos.ChuvaDTO;
 import com.gov.aesa.retorno.RetornoAesa;
 import com.gov.aesa.seguranca.JwtUtil;
 import com.gov.aesa.service.AcudeRN;
@@ -77,7 +79,6 @@ public class AcudeRestCtr extends AesaBaseCtr {
 		}
 	}
 
-
 	@GetMapping("/listarAcudes")
 	@Operation(summary = ACUDE_RESUMO, description = ACUDE_DESCRICAO, externalDocs = @ExternalDocumentation(description = MENSAGEM_PADRAO_PRELINK, url = ACUDE_URL))
 	public ResponseEntity<RetornoAesa> getAllAcudes() {
@@ -118,4 +119,24 @@ public class AcudeRestCtr extends AesaBaseCtr {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(gerarRetornoErro(e.getMessage()));
 		}
 	}
+
+	@GetMapping("/importarChuvas")
+	@Operation(summary = "Importar Dados de Chuvas", description = "Este endpoint importa dados de chuvas por município, posto e período selecionado.")
+	public ResponseEntity<RetornoAesa> importarDadosDeChuvas(@RequestParam String municipio, @RequestParam String posto, @RequestParam String anoInicial, @RequestParam String anoFinal) {
+
+		try {
+			List<ChuvaDTO> dadosChuva = new ArrayList<>();
+			for (int ano = Integer.parseInt(anoInicial); ano <= Integer.parseInt(anoFinal); ano++) {
+				List<ChuvaDTO> chuvasDoAno = acudeRN.obterDadosDeChuvaPorMunicipioEPeriodo(municipio, posto, String.valueOf(ano));
+				dadosChuva.addAll(chuvasDoAno);
+			}
+			return ResponseEntity.ok(gerarRetornoDeSucesso(dadosChuva));
+		} catch (Exception e) {
+			logger.error("Erro ao importar dados de chuvas", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(gerarRetornoErro(e.getMessage()));
+		}
+	}
 }
+
+
+

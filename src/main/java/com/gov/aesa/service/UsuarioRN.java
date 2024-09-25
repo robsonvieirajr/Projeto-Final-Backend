@@ -15,7 +15,8 @@ public class UsuarioRN extends AesaBaseCtr {
 	private UsuarioRepository usuarioRepository;
 
 	public UsuarioVO autenticar(String cpf, String senha) {
-		UsuarioVO usuario = usuarioRepository.findByCpf(cpf);
+		String cpfSemMascara = cpf.replaceAll("[^0-9]", "");
+		UsuarioVO usuario = usuarioRepository.findByCpf(cpfSemMascara);
 		if (usuario != null && usuario.getSenha().equals(senha)) {
 			return usuario;
 		}

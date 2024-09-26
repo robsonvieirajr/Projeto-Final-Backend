@@ -36,7 +36,8 @@ public class SecurityConfig {
 						"/api/v1/acude/listarAcudes",
 						"/api/v1/acude/buscarAcudePorNome",
 						"/api/v1/acude/criarAcudes",
-						"/api/v1/acude/importarChuvas"
+						"/api/v1/chuva/importarChuvas",
+						"/api/v1/chuva/salvarChuvas"
 
 				).permitAll()
 				.anyRequest().authenticated()

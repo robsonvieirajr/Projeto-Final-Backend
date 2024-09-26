@@ -37,7 +37,18 @@ public class SecurityConfig {
 						"/api/v1/acude/buscarAcudePorNome",
 						"/api/v1/acude/criarAcudes",
 						"/api/v1/chuva/importarChuvas",
-						"/api/v1/chuva/salvarChuvas"
+						"/api/v1/chuva/salvarChuvas",
+						"/api/v1/cav/criarCav",
+						"api/v1/cav/listarCavs",
+						"api/v1/cav/listarCavsPorIdAcude",
+						"/api/v1/vazao/criarVazao",
+						"api/v1/vazao/listarVazoes",
+						"api/v1/vazao/listarVazoesPorIdAcude",
+						"api/v1/vazao/editarVazoes",
+						"/api/v1/evaporacao/criarEvaporacao",
+						"api/v1/evaporacao/listarEvaporacoes",
+						"api/v1/evaporacao/listarEvaporacoesPorIdAcude",
+						"api/v1/evaporacao/editarEvaporacoes"
 
 				).permitAll()
 				.anyRequest().authenticated()

@@ -8,6 +8,11 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.gov.aesa.model.EvaporacaoVO;
+import com.gov.aesa.model.VazaoVO;
+import com.gov.aesa.repository.EvaporacaoRepository;
+import com.gov.aesa.repository.VazaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -28,6 +33,10 @@ public class ChuvaRN extends AesaBaseCtr {
 
 	@Autowired
 	private ChuvaRepository chuvaRepository;
+	@Autowired
+	private VazaoRepository vazaoRepository;
+	@Autowired
+	private EvaporacaoRepository evaporacaoRepository;
 
 	public List<ChuvaDTO> obterDadosDeChuvaPorMunicipioEPeriodo(String municipio, String posto, String ano) {
 		try {
@@ -183,6 +192,8 @@ public class ChuvaRN extends AesaBaseCtr {
 				// Iterar pelos meses e valores de chuva
 				for (Map.Entry<String, BigDecimal> entry : anoMensal.getChuvaPorMes().entrySet()) {
 					ChuvaVO chuvaVO = new ChuvaVO();
+					EvaporacaoVO evaporacaoVO = new EvaporacaoVO();
+					VazaoVO vazaoVO = new VazaoVO();
 
 					chuvaVO.setIdAcude(dto.getIdAcude());
 					chuvaVO.setMunicipio(dto.getMunicipio());
@@ -191,8 +202,25 @@ public class ChuvaRN extends AesaBaseCtr {
 					chuvaVO.setMes(entry.getKey());
 					chuvaVO.setValorChuva(entry.getValue());
 
+					//Insere os dados de Ano e Mês para Evaporação
+					evaporacaoVO.setAnoEvaporacao(anoMensal.getAno());
+					evaporacaoVO.setMesEvaporacao(entry.getKey());
+					evaporacaoVO.setId_acude(dto.getIdAcude());
+
+					//Insere os dados de Ano e Mês para Vazão
+					vazaoVO.setAnoVazao(anoMensal.getAno());
+					vazaoVO.setMesVazao(entry.getKey());
+					vazaoVO.setId_acude(dto.getIdAcude());
+
 					// Salva o objeto no repositório
 					chuvaRepository.save(chuvaVO);
+
+					// Salva o objeto no repositório
+					evaporacaoRepository.save(evaporacaoVO);
+
+					// Salva o objeto no repositório
+					vazaoRepository.save(vazaoVO);
+
 				}
 			}
 		}

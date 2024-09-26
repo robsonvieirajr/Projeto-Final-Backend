@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gov.aesa.model.ChuvaVO;
+import com.gov.aesa.model.dtos.AnoMensalDTO;
 import com.gov.aesa.model.dtos.ChuvaDTO;
 import com.gov.aesa.model.dtos.PrecipitacaoDTO;
 import com.gov.aesa.repository.ChuvaRepository;
@@ -177,19 +178,24 @@ public class ChuvaRN extends AesaBaseCtr {
 
 	public void salvarChuva(List<PrecipitacaoDTO> precipitacaoDTOList) throws Exception {
 		for (PrecipitacaoDTO dto : precipitacaoDTOList) {
-			for (Map.Entry<String, BigDecimal> entry : dto.getChuvaPorMes().entrySet()) {
-				ChuvaVO chuvaVO = new ChuvaVO();
+			// Iterar pelos anosMensais
+			for (AnoMensalDTO anoMensal : dto.getAnosMensais()) {
+				// Iterar pelos meses e valores de chuva
+				for (Map.Entry<String, BigDecimal> entry : anoMensal.getChuvaPorMes().entrySet()) {
+					ChuvaVO chuvaVO = new ChuvaVO();
 
-				chuvaVO.setIdAcude(dto.getIdAcude());
-				chuvaVO.setMunicipio(dto.getMunicipio());
-				chuvaVO.setEstacao(dto.getEstacao());
-				chuvaVO.setAno(dto.getAno());
+					chuvaVO.setIdAcude(dto.getIdAcude());
+					chuvaVO.setMunicipio(dto.getMunicipio());
+					chuvaVO.setEstacao(dto.getEstacao());
+					chuvaVO.setAno(anoMensal.getAno());
+					chuvaVO.setMes(entry.getKey());
+					chuvaVO.setValorChuva(entry.getValue());
 
-				chuvaVO.setMes(entry.getKey()); // O mês como String (ex: "Jan", "Fev", etc.)
-				chuvaVO.setValorChuva(entry.getValue()); // O valor da chuva para o mês
-
-				chuvaRepository.save(chuvaVO);
+					// Salva o objeto no repositório
+					chuvaRepository.save(chuvaVO);
+				}
 			}
 		}
 	}
+
 }

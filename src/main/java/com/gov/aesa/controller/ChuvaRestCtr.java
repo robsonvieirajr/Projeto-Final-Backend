@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -57,6 +58,7 @@ public class ChuvaRestCtr extends AesaBaseCtr {
 		}
 	}
 
+	@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 	@PostMapping("/salvarChuvas")
 	@Operation(summary = "Salvar Dados de Chuvas", description = "Este endpoint salva os dados de chuvas no banco de dados.")
 	public ResponseEntity<RetornoAesa> salvarDadosDeChuvas(@RequestBody List<PrecipitacaoDTO> precipitacaoDTOS) {

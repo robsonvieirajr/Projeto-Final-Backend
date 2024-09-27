@@ -1,5 +1,8 @@
 --Script_Banco_Sistema_Projeto_Final Unipe
 
+--Criação do Eschema AESA
+CREATE SCHEMA aesa AUTHORIZATION postgres;
+
 -- Criação da sequence para a tabela acude
 CREATE SEQUENCE aesa.seq_id_acude
     START WITH 1
@@ -112,3 +115,5 @@ CREATE TABLE aesa.usuariovo (
     token VARCHAR(255)
 );
 
+INSERT INTO aesa.usuariovo (cpf,senha,email,"token") VALUES
+	 ('06703271402','123','dio_jp@hotmail.com',NULL);

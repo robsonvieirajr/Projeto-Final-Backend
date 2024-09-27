@@ -9,7 +9,6 @@ public class AcudeDTO {
 
 	private Long id;
 	private String nome;
-	private LocalDate dataPedido;
 	private BigDecimal volumeMorto;
 	private BigDecimal volumeAcumulado;
 	private BigDecimal volumeMaximo;

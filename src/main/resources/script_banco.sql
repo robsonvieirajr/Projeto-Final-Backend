@@ -116,4 +116,4 @@ CREATE TABLE aesa.usuariovo (
 );
 
 INSERT INTO aesa.usuariovo (cpf,senha,email,"token") VALUES
-	 ('06703271402','123','dio_jp@hotmail.com',NULL);
+	 ('552.391.450-91','123','teste@hotmail.com',NULL);

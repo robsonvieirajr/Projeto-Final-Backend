@@ -6,14 +6,20 @@ O Projeto consiste na criação de um sistema web voltado o cálculo automático
 
 ## 📁 Acesso ao projeto
 
-**Efetue o download do projeto - [aqui](https://github.com/robsonvieirajr/Projeto-Final-Backend)**
-
+**Efetue o download do projeto:**
+- [Backend](https://github.com/robsonvieirajr/Projeto-Final-Backend)
+- [Backend em Docker](https://github.com/diojp/projeto_final_backend_docker)
+- [Frontend](https://github.com/robsonvieirajr/Projeto-Final-Frontend)
 
 ## 🛠️ Abrir e rodar o projeto
 
 - Abra o projeto na IDE de sua preferência;
 - Execute o script_banco.sql do banco localizado na pasta src/resources;
 - Execute o método Main localizado em src/main/java/com/gov/aesa/PosBackendApplication.java
+
+## 🛠️ Versão do Projeto em Docker
+
+- [Clique Aqui](https://github.com/diojp/projeto_final_backend_docker)
 ## Documentação da API
 
 #### Ao Executar o projeto localmente você pode acessar o swagger através do endereço:

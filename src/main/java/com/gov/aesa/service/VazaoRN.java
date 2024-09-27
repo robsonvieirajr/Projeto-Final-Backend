@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -54,17 +55,50 @@ public class VazaoRN extends AesaBaseCtr {
     public RetornoAesa buscarVazoesPorIdAcude(Long id_acude) {
         try {
             List<VazaoVO> vazoes = vazaoRepository.findAll();
-            List<VazaoVO> vazoesRetorno = new ArrayList<VazaoVO>();
-            for(VazaoVO vazao : vazoes){
-                if(vazao != null && vazao.getId_acude() == id_acude){
+            List<VazaoVO> vazoesRetorno = new ArrayList<>();
+
+            Map<String, Integer> mesesMap = new HashMap<>();
+            mesesMap.put("Jan", 1);
+            mesesMap.put("Fev", 2);
+            mesesMap.put("Mar", 3);
+            mesesMap.put("Abr", 4);
+            mesesMap.put("Mai", 5);
+            mesesMap.put("Jun", 6);
+            mesesMap.put("Jul", 7);
+            mesesMap.put("Ago", 8);
+            mesesMap.put("Set", 9);
+            mesesMap.put("Out", 10);
+            mesesMap.put("Nov", 11);
+            mesesMap.put("Dez", 12);
+
+            for (VazaoVO vazao : vazoes) {
+                if (vazao != null && vazao.getId_acude().equals(id_acude)) {
                     vazoesRetorno.add(vazao);
                 }
             }
+
+            vazoesRetorno.sort((v1, v2) -> {
+                String mes1 = v1.getMesVazao().substring(0, 1).toUpperCase() + v1.getMesVazao().substring(1).toLowerCase();
+                String mes2 = v2.getMesVazao().substring(0, 1).toUpperCase() + v2.getMesVazao().substring(1).toLowerCase();
+
+                Integer ordemMes1 = mesesMap.get(mes1);
+                Integer ordemMes2 = mesesMap.get(mes2);
+
+                if (ordemMes1 == null || ordemMes2 == null) {
+                    return (ordemMes1 == null) ? 1 : -1;
+                }
+
+                return ordemMes1 - ordemMes2;
+            });
+
             return gerarRetornoDeSucesso(vazoesRetorno);
         } catch (Exception e) {
             return gerarRetornoErro(e.getMessage());
         }
     }
+
+
+
 
     public void editarVazoes(List<VazaoDTO> vazoesDTOList) throws Exception{
         for (VazaoDTO vazaoDTO : vazoesDTOList) {
